@@ -1,0 +1,16 @@
+# <type>(<scope>): <subject>
+#
+# Type: feat | fix | docs | style | refactor | test | chore
+#
+# ───────────────────────────────────────────────────────────────
+#
+# Linked Requirements (required for feat/fix):
+#   FE-001, API-002, UI-003, NFR-001, BUG-001
+#
+# Example:
+# feat(container): add batch operations
+#
+# Linked: FE-005
+#
+# ───────────────────────────────────────────────────────────────
+# (Write commit message above, this line will be ignored)

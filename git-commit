@@ -1,0 +1,38 @@
+#!/bin/bash
+# git-commit - Requirement traceability helper
+#
+# Usage:
+#   ./git-commit "feat" "container" "Implement container dashboard" "FE-001"
+
+set -e
+
+TYPE="$1"
+SCOPE="$2"
+SUBJECT="$3"
+REQ_IDS="$4"
+
+if [ -z "$TYPE" ] || [ -z "$SUBJECT" ]; then
+    echo "Usage: ./git-commit <type> <scope> <subject> [req_ids]"
+    echo ""
+    echo "Examples:"
+    echo "  ./git-commit feat container \"Implement container dashboard\" \"FE-001\""
+    echo "  ./git-commit fix api \"Fix null check on delete\" \"API-003\""
+    exit 1
+fi
+
+# Build commit message
+if [ -n "$REQ_IDS" ]; then
+    MSG="$TYPE($SCOPE): $SUBJECT
+
+Linked: $REQ_IDS"
+else
+    MSG="$TYPE($SCOPE): $SUBJECT"
+fi
+
+# Execute commit
+git commit -m "$MSG"
+
+echo "✓ Commit created"
+echo ""
+echo "View traceability:"
+echo "  cat docs/specs/requirements/traceability.md"
