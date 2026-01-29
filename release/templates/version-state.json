@@ -1,0 +1,13 @@
+{
+  "$schema": "./version-state.schema.json",
+  "version": "0.0.0",
+  "core": true,
+  "type": "core|follower|independent",
+  "dependsOn": [],
+  "compatibility": {
+    "console": "0.0.0",
+    "desktop": "0.0.0",
+    "sdk": "0.0.0"
+  },
+  "notes": "Version state template for individual repos"
+}

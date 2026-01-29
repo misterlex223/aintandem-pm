@@ -1,0 +1,15 @@
+[submodule "repos/ce-orchestrator"]
+	path = repos/ce-orchestrator
+	url = https://github.com/AInTandem/ce-orchestrator
+[submodule "repos/ce-console"]
+	path = repos/ce-console
+	url = https://github.com/misterlex223/aintandem-ce-console
+[submodule "repos/ce-desktop"]
+	path = repos/ce-desktop
+	url = https://github.com/misterlex223/aintandem-ce-desktop
+[submodule "repos/orchestrator-sdk"]
+	path = repos/orchestrator-sdk
+	url = https://github.com/AInTandem/sdk-ce-orchestrator
+[submodule "repos/aintandem-org"]
+	path = repos/aintandem-org
+	url = https://github.com/AInTandem/aintandem-org
