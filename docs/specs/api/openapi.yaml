@@ -1,0 +1,391 @@
+openapi: 3.0.3
+info:
+  title: Kai - Flexy Container Management API
+  version: 1.0.0
+  description: API for managing Flexy AI Agent containers.
+
+servers:
+  - url: http://localhost:9900
+    description: Local development server
+
+components:
+  schemas:
+    FlexyContainer:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the container.
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+        name:
+          type: string
+          description: The user-defined name of the container.
+          example: 'project-alpha-dev'
+        status:
+          type: string
+          description: The current status of the container.
+          enum: [running, stopped, created, error]
+        folderMapping:
+          type: string
+          description: The folder mapping from host to container.
+          example: '/Users/lex/projects/alpha:/app'
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the container was created.
+
+    NewFlexyContainer:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: The name for the new container.
+        folderMapping:
+          type: string
+          description: The folder mapping string (e.g., /host/path:/container/path).
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable error message.
+
+    FlexyCatalogItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Persistent ID for the catalog record.
+        name:
+          type: string
+          description: Friendly project name.
+        hostPath:
+          type: string
+          description: Absolute host filesystem path for the project.
+        containerId:
+          type: string
+          description: Optional Docker container ID if created.
+        createdAt:
+          type: string
+          format: date-time
+          description: When the catalog record was created.
+
+    NewFlexyCatalogItem:
+      type: object
+      required:
+        - name
+        - hostPath
+      properties:
+        name:
+          type: string
+        hostPath:
+          type: string
+
+
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      tags:
+        - System
+      responses:
+        '200':
+          description: Service is healthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  uptime:
+                    type: number
+                    example: 123.45
+
+  /api/host/directories:
+    post:
+      summary: List sub-directories of a host path (home-scoped)
+      description: |
+        Browse directories within the user's home directory. The backend enforces
+        path normalization and forbids traversal outside of the home directory.
+        This endpoint is intended to assist folder mapping when creating Flexy.
+      tags:
+        - Host
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPath:
+                  type: string
+                  description: Base path to list. Defaults to the OS home directory.
+      responses:
+        '200':
+          description: The current path and its immediate sub-directories.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPath:
+                    type: string
+                  directories:
+                    type: array
+                    items:
+                      type: string
+        '403':
+          description: Access forbidden (path outside of home directory)
+        '500':
+          description: Failed to read directory
+
+  /api/flexy:
+    post:
+      summary: Create a new Flexy container
+      tags:
+        - Container Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFlexyContainer'
+      responses:
+        '201':
+          description: The container was created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlexyContainer'
+        '409':
+          description: A container with the same name already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      summary: List all Flexy containers
+      tags:
+        - Container Management
+      responses:
+        '200':
+          description: A list of Flexy containers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlexyContainer'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/catalog/flexy:
+    get:
+      summary: List persistent Flexy catalog entries
+      description: Returns the list of Flexy projects that Kai manages persistently.
+      tags:
+        - Catalog
+      responses:
+        '200':
+          description: Catalog list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlexyCatalogItem'
+    post:
+      summary: Create a new Flexy catalog entry
+      description: Registers a project in the catalog (name + hostPath). Container creation may be performed separately.
+      tags:
+        - Catalog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFlexyCatalogItem'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlexyCatalogItem'
+
+  /api/catalog/flexy/{id}:
+    delete:
+      summary: Delete a Flexy catalog entry
+      tags:
+        - Catalog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: Not Found
+
+  /flexy/{id}/shell:
+    get:
+      summary: Reverse proxy to Flexy ttyd (WebSocket/HTTP)
+      description: |
+        Proxies HTTP and WebSocket upgrade requests to the Flexy container's ttyd service on port 9681.
+        This path is not a JSON API; it forwards the stream to ttyd. Authentication, if enabled, is
+        enforced by Kai before proxying.
+      tags:
+        - Proxy
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Proxied HTTP response from ttyd.
+        '101':
+          description: Switching Protocols (WebSocket upgrade).
+        '404':
+          description: Target container not found or not reachable.
+        '500':
+          description: Proxy failure.
+
+  /flexy/{id}/docs/{path}:
+    get:
+      summary: Reverse proxy to Flexy Docs app (optional)
+      description: |
+        Proxies requests to the optional Docs app running inside Flexy (default port 8080).
+        This is an optional integration; if the Docs app is not present in the Flexy image,
+        this route will return a 404.
+      tags:
+        - Proxy
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Proxied HTTP response from Docs app.
+        '404':
+          description: Target not found.
+        '500':
+          description: Proxy failure.
+
+  /api/flexy/{id}:
+    delete:
+      summary: Delete a Flexy container
+      tags:
+        - Container Management
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the container to delete.
+      responses:
+        '204':
+          description: The container was deleted successfully.
+        '404':
+          description: Container not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/flexy/{id}/start:
+    post:
+      summary: Start a Flexy container
+      tags:
+        - Container Management
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the container to start.
+      responses:
+        '204':
+          description: The container was started successfully.
+        '404':
+          description: Container not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/flexy/{id}/stop:
+    post:
+      summary: Stop a Flexy container
+      tags:
+        - Container Management
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the container to stop.
+      responses:
+        '204':
+          description: The container was stopped successfully.
+        '404':
+          description: Container not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

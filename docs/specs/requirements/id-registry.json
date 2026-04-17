@@ -1,0 +1,117 @@
+{
+  "version": "0.6.0-alpha",
+  "lastUpdated": "2026-01-29",
+  "categories": {
+    "FE": {
+      "name": "Feature",
+      "description": "功能需求",
+      "nextId": 1
+    },
+    "API": {
+      "name": "API Endpoint",
+      "description": "API 端點",
+      "nextId": 1
+    },
+    "UI": {
+      "name": "UI Component",
+      "description": "UI 組件",
+      "nextId": 1
+    },
+    "NFR": {
+      "name": "Non-Functional",
+      "description": "非功能需求",
+      "nextId": 1
+    },
+    "BUG": {
+      "name": "Bug Fix",
+      "description": "Bug 修正",
+      "nextId": 1
+    }
+  },
+  "assignments": {
+    "FE-001": {
+      "title": "容器儀表板",
+      "description": "提供統一的 Flexy 容器管理介面",
+      "status": "completed",
+      "files": ["frontend/src/pages/Dashboard.tsx"],
+      "tags": ["dashboard", "container", "p0"]
+    },
+    "FE-002": {
+      "title": "新增容器介面",
+      "description": "提供新增 Flexy 容器的表單介面",
+      "status": "completed",
+      "files": ["frontend/src/components/CreateContainerDialog.tsx"],
+      "tags": ["form", "container", "p0"]
+    },
+    "FE-003": {
+      "title": "Shell 介面",
+      "description": "提供容器 shell 介面的 iframe 嵌入",
+      "status": "completed",
+      "files": ["frontend/src/pages/ShellPage.tsx"],
+      "tags": ["shell", "ttyd", "p0"]
+    },
+    "FE-004": {
+      "title": "Docs 介面",
+      "description": "提供 Markdown 文檔瀏覽介面",
+      "status": "pending",
+      "files": [],
+      "tags": ["docs", "markdown", "p1"]
+    },
+    "API-001": {
+      "title": "建立容器 API",
+      "description": "POST /api/containers - 建立新容器",
+      "status": "completed",
+      "files": ["backend/src/controllers/ContainerController.ts"],
+      "tags": ["container", "crud"]
+    },
+    "API-002": {
+      "title": "列出容器 API",
+      "description": "GET /api/containers - 列出所有容器",
+      "status": "completed",
+      "files": ["backend/src/controllers/ContainerController.ts"],
+      "tags": ["container", "crud"]
+    },
+    "API-003": {
+      "title": "刪除容器 API",
+      "description": "DELETE /api/containers/:id - 刪除指定容器",
+      "status": "completed",
+      "files": ["backend/src/controllers/ContainerController.ts"],
+      "tags": ["container", "crud"]
+    },
+    "API-004": {
+      "title": "啟動容器 API",
+      "description": "POST /api/containers/:id/start - 啟動指定容器",
+      "status": "pending",
+      "files": [],
+      "tags": ["container", "lifecycle"]
+    },
+    "API-005": {
+      "title": "停止容器 API",
+      "description": "POST /api/containers/:id/stop - 停止指定容器",
+      "status": "pending",
+      "files": [],
+      "tags": ["container", "lifecycle"]
+    },
+    "UI-001": {
+      "title": "容器卡片組件",
+      "description": "顯示單個容器信息的卡片組件",
+      "status": "completed",
+      "files": ["frontend/src/components/ContainerCard.tsx"],
+      "tags": ["component", "container"]
+    },
+    "NFR-001": {
+      "title": "API 回應時間",
+      "description": "API 回應時間應在 200ms-500ms 之間",
+      "status": "active",
+      "files": [],
+      "tags": ["performance"]
+    },
+    "NFR-002": {
+      "title": "容器端口隱藏",
+      "description": "Flexy 容器不應將任何端口直接映射到主機",
+      "status": "active",
+      "files": [],
+      "tags": ["security"]
+    }
+  }
+}

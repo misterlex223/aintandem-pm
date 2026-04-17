@@ -1,0 +1,39 @@
+{
+  "currentVersion": "0.6.0-alpha",
+  "nextVersion": "0.6.0",
+  "nextVersionType": "minor",
+  "status": "in-development",
+  "lastUpdated": "2026-01-29T00:00:00Z",
+  "features": [
+    {
+      "id": "FE-001",
+      "title": "容器儀表板",
+      "status": "completed",
+      "addedAt": "2026-01-29"
+    },
+    {
+      "id": "FE-002",
+      "title": "新增容器介面",
+      "status": "completed",
+      "addedAt": "2026-01-29"
+    },
+    {
+      "id": "FE-003",
+      "title": "Shell 介面",
+      "status": "completed",
+      "addedAt": "2026-01-29"
+    },
+    {
+      "id": "FE-004",
+      "title": "Docs 介面",
+      "status": "pending",
+      "addedAt": "2026-01-29"
+    }
+  ],
+  "releaseChecklist": {
+    "featuresComplete": false,
+    "tested": false,
+    "docsUpdated": true,
+    "migrationReady": false
+  }
+}
