@@ -16,3 +16,6 @@
 [submodule "repos/portal"]
 	path = repos/portal
 	url = https://github.com/AInTandem/portal.git
+[submodule "repos/round-table"]
+	path = repos/round-table
+	url = https://github.com/AInTandem/round-table
