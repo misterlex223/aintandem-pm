@@ -3,3 +3,4 @@
 .claude/settings.json
 .claude/settings.local.json
 .claude/version-state.json
+.claude/worktrees/

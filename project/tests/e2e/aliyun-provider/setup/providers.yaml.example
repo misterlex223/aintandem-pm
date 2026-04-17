@@ -1,0 +1,39 @@
+# AInTandem CE Orchestrator - Provider Configuration
+#
+# Copy this file to: ~/.config/ce-orchestrator/providers.yaml
+# Or place it in the project root as: providers.yaml
+#
+# =============================================================================
+
+providers:
+  # Local Docker provider
+  local:
+    type: local-docker
+    dockerNetwork: kai-net
+    baseRoot: /data
+
+  # Aliyun ECS provider (Guangzhou)
+  aliyun-gz:
+    type: aliyun
+    host: 8.134.76.139
+    port: 22
+    username: root
+    auth:
+      type: privateKey
+      keyPath: ~/.ssh/Aliyun-GZ.pem
+    dockerNetwork: kai-net
+    baseRoot: /data
+
+# Sandbox to provider mapping
+sandboxes:
+  # Example local sandbox
+  # local-dev-1:
+  #   provider: local
+  #   container: <container-id>
+  #   description: Local development sandbox
+
+  # Example Aliyun sandbox
+  # aliyun-prod-1:
+  #   provider: aliyun-gz
+  #   container: <container-id>
+  #   description: Production sandbox on Aliyun Guangzhou

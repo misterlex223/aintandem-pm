@@ -13,3 +13,6 @@
 [submodule "repos/aintandem-org"]
 	path = repos/aintandem-org
 	url = https://github.com/AInTandem/aintandem-org
+[submodule "repos/portal"]
+	path = repos/portal
+	url = https://github.com/AInTandem/portal.git
