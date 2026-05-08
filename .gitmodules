@@ -3,10 +3,10 @@
 	url = https://github.com/AInTandem/ce-orchestrator
 [submodule "repos/ce-console"]
 	path = repos/ce-console
-	url = https://github.com/misterlex223/aintandem-ce-console
+	url = https://github.com/AInTandem/ce-console
 [submodule "repos/ce-desktop"]
 	path = repos/ce-desktop
-	url = https://github.com/misterlex223/aintandem-ce-desktop
+	url = https://github.com/AInTandem/ce-desktop
 [submodule "repos/orchestrator-sdk"]
 	path = repos/orchestrator-sdk
 	url = https://github.com/AInTandem/sdk-ce-orchestrator
