@@ -19,3 +19,6 @@
 [submodule "repos/round-table"]
 	path = repos/round-table
 	url = https://github.com/AInTandem/round-table
+[submodule "repos/orchestrator-llm-wiki"]
+	path = repos/orchestrator-llm-wiki
+	url = https://github.com/AInTandem/orchestrator-llm-wiki.git
